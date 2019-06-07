@@ -51,22 +51,32 @@ Nomeprog PROC NEAR
         ;Soma os numeros em hexadecimal
         ADD CX, BX
 
-        ;Converte de hexa para ascii
+        ;BCD descompactados para criar um par de valores BCD descompactados (base 10).
+        ;Primeiro digito
         MOV AX, CX
         AAM
-        ADD AX, 3030H
+        ADD CL, AL
         
-        MOV BX, AX
+        ;Segundo digito
+        MOV AL, AH
+        AAM
+        MOV CH, AL
+        MOV BL, AH
+        
+        
 
         MOV DX, OFFSET pulalinha
         CALL Mostrarchar
+        MOV DX, OFFSET msg3
+        CALL Mostrarstring
 
         ;mostra resultado na tela
-        MOV DL, BH
-		    CALL Mostrarchar
-		    MOV DL, BL
-		    CALL Mostrarchar
-
+        MOV DL, CL
+        CALL Mostrarchar
+	MOV DL, CH
+	CALL Mostrarchar
+        MOV DL, BL
+        CALL Mostrarchar
 		
 
 		
