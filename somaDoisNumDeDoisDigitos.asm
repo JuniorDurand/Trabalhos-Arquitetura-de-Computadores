@@ -69,7 +69,7 @@ Nomeprog PROC NEAR
         
 
         MOV DX, OFFSET pulalinha
-        CALL Mostrarchar
+        CALL Mostrarstring
         MOV DX, OFFSET msg3
         CALL Mostrarstring
 
