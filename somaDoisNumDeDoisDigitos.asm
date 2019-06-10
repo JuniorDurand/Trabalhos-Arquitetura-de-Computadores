@@ -55,13 +55,16 @@ Nomeprog PROC NEAR
         ;Primeiro digito
         MOV AX, CX
         AAM
-        ADD CL, AL
+        MOV CL, AL
         
         ;Segundo digito
         MOV AL, AH
         AAM
         MOV CH, AL
         MOV BL, AH
+
+	ADD BX, 3030H
+	ADD CX, 3030H
         
         
 
@@ -71,12 +74,14 @@ Nomeprog PROC NEAR
         CALL Mostrarstring
 
         ;mostra resultado na tela
-        MOV DL, CL
+	MOV DL, BL
         CALL Mostrarchar
-	MOV DL, CH
+        MOV DL, CH
 	CALL Mostrarchar
-        MOV DL, BL
+	MOV DL, CL
         CALL Mostrarchar
+	
+        
 		
 
 		
