@@ -1,8 +1,19 @@
 Codigo SEGMENT
+                                        ;SEGMENT - marcador de inicio de segmento
+
 	ASSUME CS:Codigo; DS:Codigo; ES:Codigo; SS:Codigo
-	Org 100H
+
+                                        ;ASSUME - Associa um segmento a um registrador de segmento.
+                
+                                        ;CS - (Segmento de Código): contém o endereço da áreacom as instruções de máquina em execução.
+                                        ;DS - (Segmento de Dados): contém o endereço da área com os dados do programa.
+                                        ;SS - (Segmento de Pilha): contém o endereço da área com a pilha. 
+                                        ;ES - (Segmento Extra): utilizado para ganhar acesso a alguma área da memória (quando necessario).
+
+	Org 100H                        ;Monta o programa no segmento 100h de memoria
 	
-Entrada: JMP Nomeprog
+Entrada: JMP Nomeprog                   ;Pula para o Nomeprog
+                                        ;Entrada : rotulo (label)
 	
 	msg db 'digite o primeiro numero : ','$'
 	pulalinha db 0AH, 0DH, '$'
@@ -11,7 +22,8 @@ Entrada: JMP Nomeprog
 
 		;
 		
-Nomeprog PROC NEAR
+Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) esta dentro do SEGMENT
+                                        ;PROC - Marcam o início uma procedimento (rotina).
 		
         ;Mostra mensagem
         MOV DX, OFFSET msg              ;Referencia string msg no registrador DX
@@ -98,14 +110,14 @@ Nomeprog PROC NEAR
 	
 	INT 20H                        ;Encerra o programa
 		
-Nomeprog ENDP
+Nomeprog ENDP                          ;ENDP - Marca o fim de uma procedimento (rotina).
 
 Lertecla PROC NEAR
 
         ;Chama interupção 01h (ler caracter do teclado e echoa na tela e guarda em AL)
 	MOV AH, 01H
-	INT 21H
-	RET
+	INT 21H                        ;INT - indica interupção || INT 21 - interupção 21 contém os serviços do DOS.
+	RET                            ;RET - Retorno de uma chamada de rotina
 
 Lertecla ENDP
 	
@@ -129,5 +141,5 @@ Mostrarstring ENDP
 
 
 	
-Codigo ENDS
-END Entrada
+Codigo ENDS                             ;ENDS - Marcam o fim de um segmento.
+END Entrada                             ;END - Marcam o fim de um rotulo (label).
