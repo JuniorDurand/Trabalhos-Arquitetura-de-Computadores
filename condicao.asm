@@ -12,7 +12,7 @@ Entrada: JMP Nomeprog
 		
 Nomeprog PROC NEAR
 		
-		LEA DX, DADO
+		LEA DX, DADO	;parecido com OFFSET
 		MOV AH, 0AH
 		INT 21H
 		
