@@ -6,7 +6,7 @@ Codigo SEGMENT
 
                                         ;ASSUME - Associa um segmento a um registrador de segmento.
                 
-                                        ;CS - (Segmento de Código): contém o endereço da áreacom as instruções de máquina em execução.
+                                        ;CS - (Segmento de Código): contém o endereço da área com as instruções de máquina em execução.
                                         ;DS - (Segmento de Dados): contém o endereço da área com os dados do programa.
                                         ;SS - (Segmento de Pilha): contém o endereço da área com a pilha. 
                                         ;ES - (Segmento Extra): utilizado para ganhar acesso a alguma área da memória (quando necessario).
@@ -22,43 +22,51 @@ Entrada: JMP Nomeprog                   ;Pula para o Nomeprog
         nument1 db 5,?,5 dup(0)
         nument2 db 5,?,5 dup(0)
         resultSaida db 7,?,7 dup(0)
-            msg1 db 'digite o primeiro numero : ','$'
-            pulalinha db 0AH, 0DH, '$'
-            msg2 db 'digite o segundo numero : ','$'
-            msg3 db 'O resultado: ','$'
+        msg1 db 'digite o primeiro numero : ','$'
+        pulalinha db 0AH, 0DH, '$'
+        msg2 db 'digite o segundo numero : ','$'
+        msg3 db 'O resultado: ','$'
 
                 ;
                 
 Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) esta dentro do SEGMENT
                                         ;PROC - Marcam o inÃ­cio uma procedimento (rotina).
                 
-        ;Mostra mensagem
+        ;Mostra mensagem 1
         MOV DX, OFFSET msg1              ;Referencia string msg no registrador DX
         CALL Mostrarstring              ;Chama interupÃ§Ã£o 09h (printa string referenciada em DX)
         
         
+        ;ler primeiro numero
+        LEA DX, nument1                 ;Referencia vetor nument1 no registrador DX
+        MOV AH, 0AH                     ;Prepara interrupção AH (ler buffer do teclado)
+        INT 21H                         ;chama interrupção AH (ler buffer do teclado)
 
-        LEA DX, nument1
-        MOV AH, 0AH
-        INT 21H
-
-        ;Pula linha e Mostra mensagem
+        
+        ;Pula linha
         MOV DX, OFFSET pulalinha        ;Referencia string pulalinha no registrador DX
         CALL Mostrarstring              ;Chama interupÃ§Ã£o 09h (printa string referenciada em DX)
         
+        
+        ;Mostra mensagem 2
         MOV DX, OFFSET msg2             ;Referencia string msg2 no registrador DX
         CALL Mostrarstring              ;Chama interupÃ§Ã£o 09h (printa string referenciada em DX)
 
-        LEA DX, nument2
-        MOV AH, 0AH
+        
+        ;ler segundo numero
+        LEA DX, nument2                 ;Referencia vetor nument2 no registrador DX
+        MOV AH, 0AH                     ;Prepara interrupção AH (ler buffer do teclado)
         INT 21H  
         
+        
+        ;Pula linha
         MOV DX, OFFSET pulalinha        ;Referencia string pulalinha no registrador DX
         CALL Mostrarstring              ;Chama interupÃ§Ã£o 09h (printa string referenciada em DX)
 
 
-        MOV BL, nument1+4
-        MOV BH, nument1+3
+        ;Prepara primeiro numero
+        MOV BL, nument1+4               ;coloca unidade em BL
+        MOV BH, nument1+3               ;coloca dezena em BH
         AND BX, 0F0FH                   ;tira 3030H de BX
 
 
@@ -66,11 +74,12 @@ Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) est
         AAD                             ;Converte o valor de AX em BCD descompactado
         MOV BX, AX                      ;guarda AX em BX
 
-        MOV num1, Bl
+        MOV num1, Bl                    ;guarda valor do primeiro numero em bcd descompactado em variavel num1
 
 
-        MOV BL, nument2+4
-        MOV BH, nument2+3
+        ;Prepara segundo numero
+        MOV BL, nument2+4               ;coloca unidade em BL
+        MOV BH, nument2+3               ;coloca dezena em BH
         AND BX, 0F0FH                   ;tira 3030H de BX
 
 
@@ -78,79 +87,81 @@ Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) est
         AAD                             ;Converte o valor de AX em BCD descompactado
         MOV BX, AX                      ;guarda AX em BX
 
-        MOV num2, Bl
+        MOV num2, Bl                    ;guarda valor do segundo numero em bcd descompactado em variavel num2
 
 
         ;checa sinal
-        MOV BH, nument1+2
-        MOV BL, nument2+2
-        cmp BH, BL
-        JE      iguais
-        JNE     diferentes
+        MOV BH, nument1+2               ;coloca o sinal do primeiro numero em BH
+        MOV BL, nument2+2               ;coloca o sinal do segundo numero em BL
+        cmp BH, BL                      ;compara o sinal do primeiro num. com o do segundo num 
+        
+        JE      iguais                  ;se os sinais forem iguais pula para rotulo 'iguais'
+        JNE     diferentes              ;se os sinais forem diferentes pula para rotulo 'diferentes'
 
-                iguais:
-                        call subtra
-                        ;isso
-                        JMP break
+                iguais:                 ;inicio do rotulo iguais
+                        call subtra     ;chama rotina de subtração (sinais iguais)
+                        JMP break       ;sai da comparação
 
-                diferentes:
                 
-                        call soma
-                        ;isso
+                diferentes:             ;inicio do rotulo diferentes
+                        call soma       ;chama rotina de soma (sinais diferentes)
                         
                         
                         
+        break:                          ;inicio do rotulo break (sai da comparação)               
                         
+         
 
-                break:
-                        
-                        mov resultSaida+6, '$'
-                        
-                        ;unidade
-                        mov al, result
-                        aam
-                        mov resultSaida+5, al
-                        
-                        ;dezena
-                        mov al, ah
-                        aam
-                        mov resultSaida+4, al
-                        
-                        ;centena
-                        mov al, ah
-                        aam
-                        mov resultSaida+3, al
-                        
-                        
-                        add resultSaida+3, 30h
-                        add resultSaida+4, 30h
-                        add resultSaida+5, 30h
-                        
-                        MOV DX, OFFSET resultSaida             ;Referencia string msg2 no registrador DX
-                        CALL Mostrarstring
+        mov resultSaida+6, '$'          ;insere simbolo de fim de string
+                
+        ;unidade
+        mov al, result                  ;move resultado para AX
+        aam                             ;criar um par de valores BCD descompactados (base 10), AH = AL/10 || AL = AL mod 10
+        mov resultSaida+5, al           ;salva unidade do resultado na string de saida
+                
+        ;dezena
+        mov al, ah                      ;Coloca AH (Resto da divisão) em AL
+        aam                             ;criar um par de valores BCD descompactados (base 10), AH = AL/10 || AL = AL mod 10
+        mov resultSaida+4, al           ;salva dezena do resultado na string de saida
+        
+        ;centena
+        mov al, ah                      ;Coloca AH (Resto da divisão) em AL
+        aam                             ;criar um par de valores BCD descompactados (base 10), AH = AL/10 || AL = AL mod 10
+        mov resultSaida+3, al           ;salva centena do resultado na string de saida
+        
+        
+        add resultSaida+3, 30h          ;converte centena para Ascii
+        add resultSaida+4, 30h          ;converte dezena para Ascii
+        add resultSaida+5, 30h          ;converte unidade para Ascii
+                
+        MOV DX, OFFSET resultSaida      ;Referencia string msg2 no registrador DX
+        CALL Mostrarstring              ;Chama interupÃ§Ã£o 09h (printa string referenciada em DX)
                        
         
-                        ;isso
-                        
-       
                 
         
-        INT 20H                        ;Encerra o programa
+        INT 20H                         ;Encerra o programa
                 
-Nomeprog ENDP                          ;ENDP - Marca o fim de uma procedimento (rotina).
+Nomeprog ENDP                           ;ENDP - Marca o fim de uma procedimento (rotina).
 
+
+
+
+;Inicio rotina de subtração
 subtra PROC NEAR
-        mov dh, nument1+2
-        mov ch, num1
-        mov cl, num2
-        cmp ch, cl
-        JA maiorq
-        JBE menorq
+        mov dh, nument1+2               ;guarda sinal do primeiro numero
+        mov ch, num1                    ;copia primeiro numero em ch
+        mov cl, num2                    ;copia segundo numero em cl
+        cmp ch, cl                      ;compara os numeros
+        JA maiorq                       ;se o prim. numero for maior pula para rotulo 'maiorq'
+        JBE menorq                      ;se o seg. numero for menor ou igual pula para rotulo 'menorq'
 
-        maiorq: 
-                jmp sair
-        menorq: 
-                call trocasinal
+        
+        maiorq:                         ;inicio do rotulo 'maiorq' 
+                jmp sair                ;pula para rotulo 
+        
+        menorq:                         ;inicio do rotulo 'menorq'
+                call trocasinal         ;chama
                 xchg ch, cl
         
         sair:
