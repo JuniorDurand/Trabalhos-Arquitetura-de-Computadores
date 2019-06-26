@@ -135,7 +135,7 @@ Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) est
         add resultSaida+5, 30h          ;converte unidade para Ascii
                 
         MOV DX, OFFSET resultSaida      ;Referencia string msg2 no registrador DX
-        CALL Mostrarstring              ;Chama interupÃ§Ã£o 09h (printa string referenciada em DX)
+        CALL Mostrarstring              ;Chama interupção 09h (printa string referenciada em DX)
                        
         
                 
@@ -161,32 +161,34 @@ subtra PROC NEAR
                 jmp sair                ;pula para rotulo 
         
         menorq:                         ;inicio do rotulo 'menorq'
-                call trocasinal         ;chama
-                xchg ch, cl
+                call trocasinal         ;chama função trocasinal caso o segundo numero for maior q o primeiro
+                xchg ch, cl             ;troca o prim. numero com o seg. numero
         
-        sair:
+        sair:                           ;inicio do rotulo sair (sai da comparação) 
         
-        sub ch, cl
-        mov result, ch
+        sub ch, cl                      ;subtrai os numeros
+        mov result, ch                  ;guarda o resultado na variavel result
+        mov resultSaida+2, dh           ;coloca o sinal do resultado na string de saida
         
-        mov resultSaida+2, dh
-        
-        ret
-subtra ENDP
+        RET                             ;RET - Retorno de uma chamada de rotina
 
-soma PROC NEAR
+subtra ENDP                             ;ENDP - Marca o fim de uma procedimento (rotina) de subtração.
+
+
+;Inicio rotina de soma
+soma PROC NEAR                          
              
-      mov dh, nument1+2
-      mov resultSaida+2, dh
-      mov ch, num1
-      mov cl, num2
-      add ch, cl
+      mov dh, nument1+2                 ;guarda sinal do primeiro numero
+      mov resultSaida+2, dh             ;coloca o sinal do resultado na string de saida
+      mov ch, num1                      ;copia primeiro numero em ch
+      mov cl, num2                      ;copia segundo numero em cl
+      add ch, cl                        ;soma os numeros
       
-      mov result, ch
+      mov result, ch                    ;guarda o resultado na variavel result
         
-      ret
+      RET                               ;RET - Retorno de uma chamada de rotina
              
-soma ENDP
+soma ENDP                               ;ENDP - Marca o fim de uma procedimento (rotina) de soma.
 
 Lertecla PROC NEAR
 
@@ -213,21 +215,26 @@ Mostrarstring PROC NEAR
         INT 21H
         RET
 
-Mostrarstring ENDP 
+Mostrarstring ENDP                      
 
-   TROCASINAL proc near
-                CMP DH, '+'
-        JE trocasinal1
-        JNE trocasinal2
 
-        trocasinal1:
-                MOV DH, '-'
-                ret
-        trocasinal2:
-                MOV DH, '+'
-                ret 
+;Inicio rotina de troca de sina
+TROCASINAL proc near
 
-TROCASINAL endp
+        CMP DH, '+'                     ;compara o sinal salvo em DH com '+' 
+        JE trocasinal1                  ;se forem iguais pula para rotulo 'trocasinal1'
+        JNE trocasinal2                 ;se forem diferentes pula para rotulo 'trocasinal2'
+
+        trocasinal1:                    ;inicio do rotulo trocasinal1
+                MOV DH, '-'             ;coloca sinal '-' em DH q possui '+'
+                RET                     ;RET - Retorno de uma chamada de rotina
+        
+        trocasinal2:                    ;inicio do rotulo trocasinal2
+                MOV DH, '+'             ;coloca sinal '+' em DH 
+                RET                     ;RET - Retorno de uma chamada de rotina
+
+TROCASINAL ENDP                         ;ENDP - Marca o fim de uma procedimento (rotina) de trocasinal.
+
 
 
         
