@@ -183,15 +183,15 @@ subtra ENDP                             ;ENDP - Marca o fim de uma procedimento 
 ;Inicio rotina de soma
 soma PROC NEAR                          
              
-      mov dh, nument1+2                 ;guarda sinal do primeiro numero
-      mov resultSaida+2, dh             ;coloca o sinal do resultado na string de saida
-      mov ch, num1                      ;copia primeiro numero em ch
-      mov cl, num2                      ;copia segundo numero em cl
-      add ch, cl                        ;soma os numeros
+        mov dh, nument1+2               ;guarda sinal do primeiro numero
+        mov resultSaida+2, dh           ;coloca o sinal do resultado na string de saida
+        mov ch, num1                    ;copia primeiro numero em ch
+        mov cl, num2                    ;copia segundo numero em cl
+        add ch, cl                      ;soma os numeros
       
-      mov result, ch                    ;guarda o resultado na variavel result
+        mov result, ch                  ;guarda o resultado na variavel result
         
-      RET                               ;RET - Retorno de uma chamada de rotina
+        RET                             ;RET - Retorno de uma chamada de rotina
              
 soma ENDP                               ;ENDP - Marca o fim de uma procedimento (rotina) de soma.
 
