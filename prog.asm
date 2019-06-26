@@ -99,20 +99,20 @@ Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) est
         JE      iguais                  ;se os sinais forem iguais pula para rotulo 'iguais'
         JNE     diferentes              ;se os sinais forem diferentes pula para rotulo 'diferentes'
 
-                iguais:                 ;inicio do rotulo iguais
-                        call subtra     ;chama rotina de subtração (sinais iguais)
-                        JMP break       ;sai da comparação
+        iguais:                         ;inicio do rotulo iguais
+                call subtra             ;chama rotina de subtração (sinais iguais)
+                JMP break               ;sai da comparação
 
                 
-                diferentes:             ;inicio do rotulo diferentes
-                        call soma       ;chama rotina de soma (sinais diferentes)
+        diferentes:                     ;inicio do rotulo diferentes
+                call soma               ;chama rotina de soma (sinais diferentes)
                         
                         
                         
         break:                          ;inicio do rotulo break (sai da comparação)               
                         
          
-
+        ;preparando string de saida
         mov resultSaida+6, '$'          ;insere simbolo de fim de string
                 
         ;unidade
@@ -135,6 +135,10 @@ Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) est
         add resultSaida+4, 30h          ;converte dezena para Ascii
         add resultSaida+5, 30h          ;converte unidade para Ascii
                 
+
+        MOV DX, OFFSET msg3             ;Referencia string msg3 no registrador DX
+        CALL Mostrarstring              ;Chama interupção 09h (printa string referenciada em DX)        
+
         MOV DX, OFFSET resultSaida      ;Referencia string do resultado no registrador DX
         CALL Mostrarstring              ;Chama interupção 09h (printa string referenciada em DX)
                        
