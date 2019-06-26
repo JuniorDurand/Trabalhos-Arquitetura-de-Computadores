@@ -1,6 +1,6 @@
 
-Codigo SEGMENT
-                                        ;SEGMENT - marcador de inicio de segmento
+Codigo SEGMENT                          ;SEGMENT - marcador de inicio de segmento de codigo
+                                        
 
         ASSUME CS:Codigo; DS:Codigo; ES:Codigo; SS:Codigo
 
@@ -16,12 +16,15 @@ Codigo SEGMENT
 Entrada: JMP Nomeprog                   ;Pula para o Nomeprog
                                         ;Entrada : rotulo (label)
         
-        num1 db 0
-        num2 db 0
-        result db 0
-        nument1 db 5,?,5 dup(0)
-        nument2 db 5,?,5 dup(0)
-        resultSaida db 7,?,7 dup(0)
+        num1 db 0                       ;variavel usada para guardar primeiro numero
+        num2 db 0                       ;variavel usada para guardar segundo numero
+        result db 0                     ;variavel usada para guardar resultado da operação
+        
+        nument1 db 5,?,5 dup(0)         ;String usada para entrada do primeiro numero
+        nument2 db 5,?,5 dup(0)         ;String usada para entrada do segundo numero
+        resultSaida db 7,?,7 dup(0)     ;String usada para saida do resultado da operação
+        
+        ;mensagens do programa
         msg1 db 'digite o primeiro numero : ','$'
         pulalinha db 0AH, 0DH, '$'
         msg2 db 'digite o segundo numero : ','$'
@@ -33,7 +36,7 @@ Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) est
                                         ;PROC - Marcam o inÃ­cio uma procedimento (rotina).
                 
         ;Mostra mensagem 1
-        MOV DX, OFFSET msg1              ;Referencia string msg no registrador DX
+        MOV DX, OFFSET msg1             ;Referencia string msg no registrador DX
         CALL Mostrarstring              ;Chama interupÃ§Ã£o 09h (printa string referenciada em DX)
         
         
@@ -69,7 +72,6 @@ Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) est
         MOV BH, nument1+3               ;coloca dezena em BH
         AND BX, 0F0FH                   ;tira 3030H de BX
 
-
         MOV AX, BX                      ;Coloca o valor de BX em AX
         AAD                             ;Converte o valor de AX em BCD descompactado
         MOV BX, AX                      ;guarda AX em BX
@@ -81,7 +83,6 @@ Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) est
         MOV BL, nument2+4               ;coloca unidade em BL
         MOV BH, nument2+3               ;coloca dezena em BH
         AND BX, 0F0FH                   ;tira 3030H de BX
-
 
         MOV AX, BX                      ;Coloca o valor de BX em AX
         AAD                             ;Converte o valor de AX em BCD descompactado
@@ -134,7 +135,7 @@ Nomeprog PROC NEAR                      ;NEAR quando o procedimento (rotina) est
         add resultSaida+4, 30h          ;converte dezena para Ascii
         add resultSaida+5, 30h          ;converte unidade para Ascii
                 
-        MOV DX, OFFSET resultSaida      ;Referencia string msg2 no registrador DX
+        MOV DX, OFFSET resultSaida      ;Referencia string do resultado no registrador DX
         CALL Mostrarstring              ;Chama interupção 09h (printa string referenciada em DX)
                        
         
@@ -190,32 +191,21 @@ soma PROC NEAR
              
 soma ENDP                               ;ENDP - Marca o fim de uma procedimento (rotina) de soma.
 
-Lertecla PROC NEAR
+       
 
-        ;Chama interupÃ§Ã£o 01h (ler caracter do teclado e echoa na tela e guarda em AL)
-        MOV AH, 01H
-        INT 21H                        ;INT - indica interupÃ§Ã£o || INT 21 - interupÃ§Ã£o 21 contÃ©m os serviÃ§os do DOS.
-        RET                            ;RET - Retorno de uma chamada de rotina
 
-Lertecla ENDP
-        
-Mostrarchar PROC NEAR
-
-        ;Chama interupÃ§Ã£o 02h (printa caracter(ASCII) que esta no registrador DL)
-        MOV AH, 02H
-        INT 21H
-        RET
-
-Mostrarchar ENDP
-
+;Inicio rotina de Mostrarstring
+;chama int. 09H 
+;q printa str. refereciada em DX
 Mostrarstring PROC NEAR
 
-        ;Chama interupÃ§Ã£o 09h (printa string referenciada em DX)
-        MOV AH, 09
-        INT 21H
-        RET
+        MOV AH, 09                      ;prepara int. 09H
+        INT 21H                         ;chama interrupção do SO.
+        RET                             ;RET - Retorno de uma chamada de rotina
 
 Mostrarstring ENDP                      
+
+
 
 
 ;Inicio rotina de troca de sina
