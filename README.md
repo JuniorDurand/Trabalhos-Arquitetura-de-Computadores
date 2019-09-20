@@ -4,7 +4,7 @@ Repositório criado para o desenvolvimento dos trabalhos de implementação soli
 
 ## 1º Trabalho
 
-Desenvolver um programa em assembly 8086 que receba dois numeros de dois digitos e efetue a soma entre eles e mostre na tela o resultado.
+Desenvolver um programa em assembly 8086 que receba dois numeros de dois digitos e efetue a soma entre eles, e mostre na tela o resultado.
 
 ### Exemplo
 ~~~
@@ -12,6 +12,7 @@ Desenvolver um programa em assembly 8086 que receba dois numeros de dois digitos
 	digite o segundo numero : 16
 	O resultado: 018
 ~~~
+
 
 ## 2º Trabalho
 
